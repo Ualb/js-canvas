@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Highcharts - Click to Add Point Chart</title>
+        
+    
+</head>
+<body>
+    <div id="container"  style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <input id="x" type="number" value="125">dB</input>
+    <input id="y" type="number"  value="-10">Hz</input>
+    <button id="button">Puntuar</button>
+</body>
+
+<!-- local de lógica -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="Highcharts_7.0.3/code/modules/drilldown.js"></script>
+    <script src="Highcharts_7.0.3/code/highcharts.js"></script>
+    <script src="Highcharts_7.0.3/code/modules/exporting.js"></script>
+    <script src="Highcharts_7.0.3/code/modules/export-data.js"></script>        
+    <script type="text/javascript"> 
+        var chartseries = [{data:[null, null]}]; 
+
+        var chart = Highcharts.chart('container', {
+            chart: {
+                type: 'scatter',
+                // margin: [70, 50, 60, 80],
+                events: {
+                    click: function (e) {
+                        // find the clicked values and the series
+                        var x = e.xAxis[0].value,
+                            y = e.yAxis[0].value,
+                            series = this.series[0];
+                        // Add it
+                        series.addPoint([x, y]);
+
+                        // aquí se puede capturar las coordenadas
+                        console.log(x);
+                        console.log(y);
+                    }
+                }
+            },
+            title: {
+                text: 'Audiograma'
+            },
+            subtitle:{
+                text: 'Haga click y desplazarse con espacio.'
+            },
+            xAxis: {
+                title: {
+                    text: 'dB'
+                },
+                gridLineWidth: 1,
+                minPadding: 0.2,
+                maxPadding: 0.2,
+                maxZoom: 60,
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }],
+                // categories: [125,250,500,750,1000,1500,2000,3000,4000,6000,8000],
+                max: 8000,
+                min: 125
+            },
+            yAxis: {
+                title: {
+                    text: 'Hz'
+                },
+                gridLineWidth: 1,
+                minPadding: 0.2,
+                maxPadding: 0.2,
+                maxZoom: 60 ,
+                // categories: [-10,0,10,20,30,40,50,60,70,80,90,100,110],
+                reversed: true,
+                max:110,
+                min:-10,
+                tickInterval: 10
+            },
+            plotOptions: {
+                series: {
+                    lineWidth: 1,
+                    point: {
+                        events: {
+                            'click': function () {
+                                if (this.series.data.length > 1) {
+                                    this.remove();
+                                }
+                            }
+                        }
+                    }
+                }
+            }, 
+            series: chartseries,
+            legend: {
+                enabled: false
+            },
+            exporting: {
+                enabled: true 
+            }
+        });
+
+        
+        $('#button').click(function () {
+            chart.series[0].addPoint([parseInt(document.getElementById("x").value, 10), 
+                parseInt(document.getElementById("y").value,10)]);
+        }); 
+    </script>
+</html>
